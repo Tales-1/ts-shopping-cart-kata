@@ -10,11 +10,11 @@ class PercentageDiscountOffer extends OfferBase {
     }
 
     apply(receiptItem: ReceiptItem) : number{
-        const percentageDiscount = this._offerVariable;
+        const percentageAsDecimal = this._offerVariable / 100;
 
         const currentPrice = receiptItem.product.price * receiptItem.quantity;
 
-        const discounted = currentPrice - (currentPrice / percentageDiscount);
+        const discounted = currentPrice - (currentPrice * percentageAsDecimal);
 
         return discounted;
     }
