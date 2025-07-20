@@ -1,84 +1,59 @@
+import { Deal } from './deals/deal';
+import { createDeal, DealConfigObject, deals } from './deals/deals-config';
 import { Product } from './product';
 import { Receipt, ReceiptItem } from './receipt';
 
+// My approach:
+// Implement strategy pattern. Break down deal into trigger and offer algorithms.
+// Isolating these algorithms grants us complete flexibility in creating deals
+// Separate trigger from offer
+// Combine the two to create a special deal
 
 export class Checkout {
-    private products : Array<Product> = [];
+    private _products : Array<Product> = [];
+    private readonly _deals: DealConfigObject[];
+
+    constructor(){
+        this._deals = deals.map(deal => createDeal(deal));
+    }
 
     public scanItem(product: Product): void {
-        this.products.push(product);
+        this._products.push(product);
     }
 
     public generateReceipt(): Receipt {
-        // Receipt item
-        // Product - name & price + quantity.
-        const receiptItems = this.products.reduce(
+        const receiptItems = this._products.reduce(
             (
                 productsSoFar: ReceiptItem[],
                 product,
             ) => {
-                const existing = productsSoFar.find(psf => psf.product.name == product.name);
 
-                if(existing) {
-                   existing.quantity++
-                   return; 
-                } 
+            const existing = productsSoFar.find(psf => psf.product.name == product.name);   
 
-                productsSoFar.push({ product, quantity: 1 });
+            if(existing) {
+               existing.quantity++
+               return; 
+            } 
 
-                return productsSoFar;
+            productsSoFar.push({ product, quantity: 1 });
+
+            return productsSoFar;
             }, []
         );
 
-        const totalPrice = receiptItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0) 
+        const totalPrice = receiptItems.reduce((acc, item) => { 
+            const dealConfig = this._deals.find(deal => deal.category.toLowerCase() == item.product.name);
 
-        // Apply special offers?
+            if(dealConfig == null)
+                return acc + item.product.price * item.quantity;
 
-        // Special offer
-        // CallBack
+            const deal = new Deal(dealConfig);
+
+            const dealPrice = deal.getFinalPrice(item);
+
+            return dealPrice;
+        }, 0) 
+
         return new Receipt(receiptItems, totalPrice);
     }
 }
-
-
-
-
-
-
-const specialOffersKeys = {
-    PERCENTAGE_DISCOUNT: "PercentageDiscount",
-    FIXED_DISCOUNT: "FixedDiscount",
-    FREE_ITEM: "FreeItem",
-}
-
-const triggers = {
-    DEFAULT: "default",
-    BUY_X_QUANTITY: "BuyXQuantity"
-}
-
-interface SpecialOffer {
-    offerKey: string,
-    trigger: string,
-}
-
-
-const specialOffers: SpecialOffer[] = [
-    {
-        offerKey: specialOffersKeys.PERCENTAGE_DISCOUNT,
-        trigger:triggers.BUY_X_QUANTITY,
-
-    },
-]
-    // Separate trigger from offer
-    // Combine the two to create a deal!
-
-    // OFFER
-        // Discount
-            // Percentage
-            // Fixed discount 
-        // Free item
-
-    // TRIGGERS
-        // Item itself
-        // Buy X quantity
-
