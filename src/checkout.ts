@@ -1,5 +1,5 @@
 import { Deal } from './deals/deal';
-import { createDeal, DealConfigObject, deals } from './deals/deals-config';
+import {  DealConfigObject } from './deals/deals-config';
 import { Product } from './product';
 import { Receipt, ReceiptItem } from './receipt';
 
@@ -7,15 +7,15 @@ import { Receipt, ReceiptItem } from './receipt';
 // Implement strategy pattern. Break down deal into trigger and offer algorithms.
 // Isolating these algorithms grants us complete flexibility in creating deals
 // Separate trigger from offer
-// Combine the two to create a special deal
+// Combine the two to create a deal
 
 export class Checkout {
     private _products : Array<Product> = [];
-    private readonly _deals: DealConfigObject[];
+    private _deals: DealConfigObject[] = []
 
-    constructor(){
-        this._deals = deals.map(deal => createDeal(deal));
-    }
+   public assignDeals(deals: DealConfigObject[]){
+     this._deals = deals;
+   }
 
     public scanItem(product: Product): void {
         this._products.push(product);
@@ -28,11 +28,11 @@ export class Checkout {
                 product,
             ) => {
 
-            const existing = productsSoFar.find(psf => psf.product.name == product.name);   
-
+            const existing = productsSoFar?.find(psf => psf.product.name == product.name);   
+            
             if(existing) {
                existing.quantity++
-               return; 
+               return productsSoFar;
             } 
 
             productsSoFar.push({ product, quantity: 1 });
@@ -41,8 +41,8 @@ export class Checkout {
             }, []
         );
 
-        const totalPrice = receiptItems.reduce((acc, item) => { 
-            const dealConfig = this._deals.find(deal => deal.category.toLowerCase() == item.product.name);
+        const totalPrice = receiptItems?.reduce((acc, item) => { 
+            const dealConfig = this._deals.find(deal => deal.productName.toLowerCase() == item.product.name.toLowerCase());
 
             if(dealConfig == null)
                 return acc + item.product.price * item.quantity;
@@ -51,7 +51,7 @@ export class Checkout {
 
             const dealPrice = deal.getFinalPrice(item);
 
-            return dealPrice;
+            return acc + dealPrice;
         }, 0) 
 
         return new Receipt(receiptItems, totalPrice);
