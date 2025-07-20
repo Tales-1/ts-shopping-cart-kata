@@ -11,12 +11,8 @@ class FixedDiscountOffer extends OfferBase {
 
     apply(receiptItem: ReceiptItem) : number {
         const fixedDiscount = this._offerVariable;
-
-        const currentPrice = receiptItem.product.price * receiptItem.quantity;
-
-        const discounted = currentPrice - fixedDiscount;
-
-        return discounted;
+        const currentPrice = fixedDiscount * receiptItem.quantity;
+        return currentPrice;
     }
 }
 
