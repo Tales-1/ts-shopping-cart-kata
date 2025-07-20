@@ -1,5 +1,4 @@
 export class Product {
-
     public readonly name: string;
     public readonly price: number;
 
@@ -7,5 +6,4 @@ export class Product {
         this.name = name;
         this.price = price;
     }
-
 }
