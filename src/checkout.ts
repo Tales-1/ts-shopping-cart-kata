@@ -49,7 +49,7 @@ export class Checkout {
 
             const deal = new Deal(dealConfig);
 
-            const dealPrice = deal.getFinalPrice(item);
+            const dealPrice = deal.applyTo(item);
 
             return acc + dealPrice;
         }, 0) 

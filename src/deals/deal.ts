@@ -20,7 +20,7 @@ class Deal {
         this._productName = deal.productName;
     }
 
-    public getFinalPrice(receiptItem: ReceiptItem) {
+    public applyTo(receiptItem: ReceiptItem) {
         const originalPrice = receiptItem.product.price * receiptItem.quantity;
         
         if(receiptItem.product.name.toLowerCase() != this._productName.toLowerCase()) 
