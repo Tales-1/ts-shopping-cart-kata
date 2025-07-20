@@ -16,12 +16,4 @@ interface TriggerConfig {
     triggerVariable?: number,
 }
 
-interface DealOptions {
-    category: string,
-    triggerRule: TriggerRule,
-    offerRule: OfferRule,
-    triggerVariable?: number,
-    offerVariable?: number
-}
-
-export { DealConfigObject, OfferConfig, TriggerConfig, DealOptions}
+export { DealConfigObject, OfferConfig, TriggerConfig }

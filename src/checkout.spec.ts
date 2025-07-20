@@ -1,8 +1,16 @@
 import { Checkout } from './checkout';
 import { Receipt, ReceiptItem} from './receipt';
 import { Product } from './product';
-import { DealConfigObject, DealOptions } from './deals/deals-config';
+import { DealConfigObject } from './deals/deals-config';
 import { TriggerRule, OfferRule } from './deals/rules';
+
+interface DealOptions {
+    category: string,
+    triggerRule: TriggerRule,
+    offerRule: OfferRule,
+    triggerVariable?: number,
+    offerVariable?: number
+}
 
 const deals:DealOptions[] = [
     {
