@@ -12,18 +12,18 @@ import { BuyMoreThanTrigger } from "./deal-triggers/buy-more-than-trigger";
 class Deal {
     private readonly _offerConfig : OfferConfig;
     private readonly _triggerConfig : TriggerConfig;
-    private readonly _category: string;
+    private readonly _productName: string;
     
     constructor(deal: DealConfigObject) {
         this._offerConfig = deal.offerConfig;
         this._triggerConfig = deal.triggerConfig;
-        this._category = deal.category;
+        this._productName = deal.productName;
     }
 
     public getFinalPrice(receiptItem: ReceiptItem) {
         const originalPrice = receiptItem.product.price * receiptItem.quantity;
-
-        if(receiptItem.product.name.toLowerCase() != this._category) 
+        
+        if(receiptItem.product.name.toLowerCase() != this._productName.toLowerCase()) 
             return originalPrice;
 
         if(!this.receiptItemIsEligible(receiptItem)) return originalPrice;
@@ -48,14 +48,14 @@ class Deal {
     private initialiseTrigger() {
         const rule = this._triggerConfig.triggerRule;
         const variable = this._triggerConfig.triggerVariable;
-        const category = this._category;
+        const category = this._productName;
 
         switch(rule){
             case(TriggerRule.BUY_X_QUANTITY):
-                return new BuyQuantityTrigger(this._category, variable);
+                return new BuyQuantityTrigger(this._productName, variable);
 
             case(TriggerRule.BUY_MORE_THAN_X):
-                return new BuyMoreThanTrigger(this._category, variable);
+                return new BuyMoreThanTrigger(this._productName, variable);
                 
             default:
                 return new TriggerBase(category);
