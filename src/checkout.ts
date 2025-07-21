@@ -9,6 +9,10 @@ import { Receipt, ReceiptItem } from './receipt';
 // Separate trigger from offer
 // Combine the two to create a deal
 
+// TO DO:
+// Add guard clauses to handle null 'triggerVariable' setups
+// Declutter 'checkout.spec.ts'
+
 export class Checkout {
     private _products : Array<Product> = [];
     private _deals: DealConfigObject[] = []
